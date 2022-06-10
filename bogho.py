@@ -1,17 +1,25 @@
-# import sys module
+# imports
 import pygame
 import sys
 import csv  
 import webbrowser
 
 
-    
+# declare class
+class box:
+
+    def __init__(self,box_num, X,Y):
+        self.box_num = box_num
+        self.x = X
+        self.y = Y
+
+# open and make list of csv file
 with open("AHS Jazz Music Library - Jazz - Instrument Storage.csv", "r") as f:
     csv_reader = csv.DictReader(f)
     name_records = list(csv_reader)
 
 
-
+# when go to recording button is pressed, go to link or if no link to generic site
 def geturl(num):
     num = int(num)
     if list(name_records[num-1].values())[6] != "":
@@ -19,6 +27,7 @@ def geturl(num):
     else:
         webbrowser.open("https://www.jwpepper.com/sheet-music/welcome.jsp")
 
+#get the values from the list (name_records) and display them
 def show(test):
     string = []
     test = int(test)
@@ -35,7 +44,6 @@ def show(test):
 # imported module
 pygame.init()
 clock = pygame.time.Clock()
-# it will display on screen
 display_surface = pygame.display.set_mode((100, 100))
 screen = pygame.display.set_mode([1280, 720])
 
@@ -48,7 +56,7 @@ pygame.display.set_icon(Icon)
 image = pygame.image.load("shelf.png")
 
 # basic font for user typed
-base_font = pygame.font.SysFont("comicsansms", 17)
+base_font = pygame.font.SysFont("comicsansms", 18)
 user_text = ''
 text = base_font.render('', True, (255,255,255))
 textRect = text.get_rect()
@@ -60,11 +68,11 @@ input_rect = pygame.Rect(200, 200, 100, 32)
   
 # color_active stores color(lightskyblue3) which
 # gets active when input box is clicked by user
-color_active = pygame.Color('lightskyblue3')
+color_active = pygame.Color('gray')
   
 # color_passive store color(chartreuse4) which is
 # color of input box.
-color_passive = pygame.Color('chartreuse4')
+color_passive = pygame.Color('gainsboro')
 color = color_passive
   
 active = False
@@ -85,21 +93,20 @@ while True:
             else:
                 active = False
             if urlbutton.collidepoint(event.pos) and len(user_text) != 0 and int(user_text) <= len(name_records):
-                #print("bob")
                 geturl(user_text)
             
   
         if event.type == pygame.KEYDOWN and active == True:
-  
+
+            if event.key == pygame.K_RETURN: # if key is the enter key
+                active = False
             # Check for backspace
             if event.key == pygame.K_BACKSPACE:
   
                 # get text input from 0 to -1 i.e. end.
                 user_text = user_text[:-1]
   
-            # Unicode standard is used for string
-            # formation
-            else:
+            else: # input validation ( only between 0-9)
                 try:
                     temp = event.unicode
                     temp = int(temp)
@@ -107,7 +114,7 @@ while True:
                 except:
                     print("letter")
     
-    # it will set background color of screen
+    # fill screen with white
     screen.fill((255, 255, 255))
   
     if active:
@@ -125,17 +132,9 @@ while True:
   
     text_surface = base_font.render(user_text, True, (255, 255, 255))
       
-    # render at position stated in arguments
     screen.blit(text_surface, (input_rect.x+5, input_rect.y+5))
     display_surface.blit(image, (400, 200))  
-    # set width of textfield so that text cannot get
-    # outside of user's text input
-    input_rect.w = max(100, text_surface.get_width()+10)
+    # input_rect.w = max(100, text_surface.get_width()+10)
       
-    # display.flip() will update only a portion of the
-    # screen to updated, not full area
     pygame.display.flip()
-      
-    # clock.tick(60) means that for every second at most
-    # 60 frames should be passed.
     clock.tick(60)
