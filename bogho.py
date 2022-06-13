@@ -1,5 +1,6 @@
 # imports
 import pygame
+from pygame import mixer
 import sys
 import csv  
 import webbrowser
@@ -17,8 +18,8 @@ class cupboard:
     def reveal(self):
         pygame.draw.rect(screen, (255,0,0), (self.x, self.y, self.w, self.h))
     def hide(self):
-        screen.blit(image, (400, 200))  
-
+        # screen.blit(image, (400, 200))  
+        print("hide")
 # open and make list of csv file
 with open("AHS Jazz Music Library - Jazz - Instrument Storage.csv", "r") as f:
     csv_reader = csv.DictReader(f)
@@ -28,16 +29,30 @@ with open("AHS Jazz Music Library - Jazz - Instrument Storage.csv", "r") as f:
 
 def locate(index_num):
     index_num = int(index_num)
-    if (0<= index_num <= 10):
+    if (0<= index_num <= 14):
         return 1
-    elif (11 <=  index_num <=20):
+    elif (15 <=  index_num <=33):
         return 2
-    elif (21 <= index_num <=30):
+    elif (34 <= index_num <=50):
         return 3
-    elif (31 <= index_num <=40):
+    elif (51 <= index_num <=70):
         return 4
-    elif (41 <= index_num <=40):
+    elif (71 <= index_num <=90):
         return 5
+    elif (91 <= index_num <=110):
+        return 6
+    elif (111 <= index_num <=130):
+        return 7
+    elif (131-148 <= index_num <=148):
+        return 8
+    elif ( 149 <= index_num <=166):
+        return 9
+    elif ( 167 <= index_num <= 186):
+        return 10
+    elif ( 187<= index_num <= 206):
+        return 11
+    elif (207 <= index_num <=263 ):
+        return 12
     
 
 
@@ -57,27 +72,34 @@ def show(test):
     temp = list(name_records[test].values())
     temp2 = list(name_records[test].keys())
     for i in range(0,7,1):
-         string.append(f'{temp2[i]}: {temp[i]}')
+         if temp[i] != "":
+             string.append(f'{temp2[i]}: {temp[i]}')
+         else:
+             string.append(f'{temp2[i]}: None')
     # print(string)
     for iter, thing in enumerate(string):
         screen.blit(base_font.render(thing, True, (0,0,0)), (6,25*iter))
-         
-# pygame.init() will initialize all
-# imported module
+# init pygame         
 pygame.init()
+pygame.mixer.init()
 clock = pygame.time.Clock()
+mixer.music.set_volume(0.2)
 # screen = pygame.display.set_mode((100, 100))
-screen = pygame.display.set_mode([1280, 720])
+screen = pygame.display.set_mode([1280, 800])
 
 # display icon and caption text
 pygame.display.set_caption('AHS Jazz Library locator!')
 Icon = pygame.image.load("ICON.jpg")
 pygame.display.set_icon(Icon)
 
+# music
+mixer.music.load('take5.wav')
+
 # display image
 image = pygame.image.load("shelf.png")
+image = pygame.transform.scale(image, (900, 600))
 
-# basic font for user typed
+# get a font and set a few variables related to text up
 base_font = pygame.font.SysFont("comicsansms", 18)
 user_text = ''
 text = base_font.render('', True, (255,255,255))
@@ -105,21 +127,23 @@ box_4 = cupboard(4,1024,210,190,210)
 # box_5 = cupboard(5,80,80)
 # box_6 = cupboard(6,100,100)
 
-if_draw = False
 while True:
     for event in pygame.event.get():
   
-      # if user types QUIT then the screen will close
+        # quit game if user clicks exit
         if event.type == pygame.QUIT:
+            mixer.music.play()
+            pygame.time.wait(1020)
             pygame.quit()
             sys.exit()
-        if len(user_text) > 3:
+        if len(user_text) > 3: # makes sure length is less then 3
             user_text = user_text[:-1] 
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN: # if user clicks mouse
             if input_rect.collidepoint(event.pos):
                 active = True
             else:
                 active = False
+            # if the user clicks on get url button
             if urlbutton.collidepoint(event.pos) and len(user_text) != 0 and int(user_text) <= len(name_records):
                 geturl(user_text)
             
@@ -168,22 +192,17 @@ while True:
 
 
     # display text
-    if len(user_text) >0:
+    if len(user_text) >0 and active == False:
         
         if locate(user_text) == 1:
             box_1.reveal()
-            if_draw = True
         elif locate(user_text) == 2:
             box_2.reveal()
-            if_draw = True
         elif locate(user_text) == 3:
             box_3.reveal()
         elif locate(user_text) == 4:
             box_4.reveal()
 
-    
-    
-
-      
+     
     pygame.display.flip()
     clock.tick(60)
