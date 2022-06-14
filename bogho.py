@@ -17,9 +17,7 @@ class cupboard:
         
     def reveal(self):
         pygame.draw.rect(screen, (255,0,0), (self.x, self.y, self.w, self.h))
-    def hide(self):
-        # screen.blit(image, (400, 200))  
-        print("hide")
+
 # open and make list of csv file
 with open("AHS Jazz Music Library - Jazz - Instrument Storage.csv", "r") as f:
     csv_reader = csv.DictReader(f)
@@ -55,7 +53,18 @@ def locate(index_num):
         return 12
     
 
-
+def search(title):
+    found = False
+    #title = 'Take Five'
+    for i in range (len(name_records)):
+        if name_records[i]["Title"].upper()  == title.upper() :
+            show(name_records[i]["Folder number"])
+            found = True
+            #return name_records[i]["Folder number"]
+            break
+    if found == False:
+        
+        screen.blit(base_font.render("NOT FOUND", True, (0,0,0)), (6,25))
 # when go to recording button is pressed, go to link or if no link to generic site
 def geturl(num):
     num = int(num)
@@ -100,15 +109,21 @@ image = pygame.image.load("shelf.png")
 image = pygame.transform.scale(image, (900, 600))
 
 # get a font and set a few variables related to text up
-base_font = pygame.font.SysFont("comicsansms", 18)
+base_font = pygame.font.SysFont("comicsansms", 19)
 user_text = ''
+search_text = ""
+help1_text = "Search by number"
+help2_text = "Search by name"
 text = base_font.render('', True, (255,255,255))
+text2= base_font.render('', True, (255,255,255))
 textRect = text.get_rect()
+textRect2 = text2.get_rect()
 link_color = (0, 0, 0)
 
 
 # create rectangle
 input_rect = pygame.Rect(200, 200, 100, 32)
+search_rect = pygame.Rect(5, 400, 300, 32)
   
 # color_active stores color(lightskyblue3) which
 # gets active when input box is clicked by user
@@ -118,14 +133,19 @@ color_active = pygame.Color('gray')
 # color of input box.
 color_passive = pygame.Color('gainsboro')
 color = color_passive
+color2 = color_passive
+
   
 active = False
+active2 = False
 box_1 = cupboard(1,410, 210, 190, 210)
 box_2 = cupboard(2,600,210,190,210)
 box_3 = cupboard(2,790,210,190,210)
 box_4 = cupboard(4,1024,210,190,210)
-# box_5 = cupboard(5,80,80)
-# box_6 = cupboard(6,100,100)
+#box_5 = cupboard(5,80,80)
+#box_6 = cupboard(6,100,100)
+
+
 
 while True:
     for event in pygame.event.get():
@@ -143,6 +163,10 @@ while True:
                 active = True
             else:
                 active = False
+            if search_rect.collidepoint(event.pos):
+                active2 = True
+            else:
+                active2 = False
             # if the user clicks on get url button
             if urlbutton.collidepoint(event.pos) and len(user_text) != 0 and int(user_text) <= len(name_records):
                 geturl(user_text)
@@ -152,7 +176,6 @@ while True:
 
             if event.key == pygame.K_RETURN: # if key is the enter key
                 active = False
-                box_1.reveal()
             # Check for backspace
             if event.key == pygame.K_BACKSPACE:
   
@@ -167,32 +190,62 @@ while True:
                     print(locate(user_text))
                 except:
                     print("letter")
-    
+
+
+        if event.type == pygame.KEYDOWN and active2 == True:
+            
+            if event.key == pygame.K_RETURN: # if key is the enter key
+                active2 = False
+            elif event.key == pygame.K_BACKSPACE:
+  
+                # get text input from 0 to -1 i.e. end.
+                search_text = search_text[:-1]
+            else: # input validation ( only between 0-9)
+                try:
+                    search_text += event.unicode
+                except:
+                    print("letter")    
+            
     # fill screen with white
     screen.fill((255, 255, 255))
   
     if active:
         color = color_active
+        search_text = ""
     else:
         color = color_passive
+    if active2:
+        color2 = color_active
+        user_text = ''
+    else:
+        color2 = color_passive
     if active == False and len(user_text) != 0 and int(user_text) <= len(name_records) :
          show(user_text)
+    if active2 == False and len(search_text) != 0:
+        search(search_text)
         
-    urlbutton = screen.blit(base_font.render("Go to recording", True, link_color), (5, 200))
+    urlbutton = screen.blit(base_font.render("Go to recording", True, link_color), (5, 300))
     screen.blit(text, textRect)
+    screen.blit(text2, textRect2)
     # draw rectangle and argument passed which should
     # be on screen
     pygame.draw.rect(screen, color, input_rect)
+    pygame.draw.rect(screen, color2, search_rect)
   
-    text_surface = base_font.render(user_text, True, (255, 255, 255))
-      
-    screen.blit(text_surface, (input_rect.x+5, input_rect.y+5))
-    screen.blit(image, (400, 200))  
-    # input_rect.w = max(100, text_surface.get_width()+10)
+    text_surface  = base_font.render(user_text, True, (255, 255, 255))
+    text_surface2 = base_font.render(search_text, True, (255,255,255))
+    text_surface3 = base_font.render(help1_text, True, (0,0,0))
+    text_surface4 = base_font.render(help2_text, True, (0,0,0))
 
+    screen.blit(text_surface, (input_rect.x+5, input_rect.y+5))
+    screen.blit(text_surface2, (search_rect.x+5, search_rect.y+5))
+    screen.blit(text_surface3, (5, 200))
+    screen.blit(text_surface4, (search_rect.x, search_rect.y-30))
+    screen.blit(image, (400, 200))  
 
     # display text
     if len(user_text) >0 and active == False:
+
         
         if locate(user_text) == 1:
             box_1.reveal()
