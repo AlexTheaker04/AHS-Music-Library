@@ -75,10 +75,6 @@ def search(title):
         for iter, thing in enumerate(arr2):
             screen.blit(base_font.render(thing,True, (0,0,0)),(6,500))
 
-
-
-
-
 # when "go to recording" button is pressed, go to link or if no link to generic site
 def geturl(num):
     num = int(num)
@@ -136,16 +132,12 @@ textRect2 = text2.get_rect()
 link_color = (0, 0, 0)
 
 
-# create rectangle
+# create rectangles
 input_rect = pygame.Rect(200, 200, 100, 32)
 search_rect = pygame.Rect(5, 400, 300, 32)
   
-# color_active stores color(lightskyblue3) which
-# gets active when input box is clicked by user
+# set active and passive colors
 color_active = pygame.Color('gray')
-  
-# color_passive store color(chartreuse4) which is
-# color of input box.
 color_passive = pygame.Color('gainsboro')
 color = color_passive
 color2 = color_passive
@@ -153,6 +145,8 @@ color2 = color_passive
   
 active = False
 active2 = False
+
+# declare classes
 box_1 = cupboard(1,410, 210, 190, 210)
 box_2 = cupboard(2,600,210,190,210)
 box_3 = cupboard(2,790,210,190,210)
@@ -167,13 +161,13 @@ while True:
   
         # quit game if user clicks exit
         if event.type == pygame.QUIT:
-            mixer.music.play()
-            pygame.time.wait(1020)
+            mixer.music.play() # play funny sound
+            pygame.time.wait(1020) # wait until end
             pygame.quit()
             sys.exit()
         if len(user_text) > 3: # makes sure length is less then 3
             user_text = user_text[:-1] 
-        if event.type == pygame.MOUSEBUTTONDOWN: # if user clicks mouse
+        if event.type == pygame.MOUSEBUTTONDOWN: # if user clicks mouse on a button, set to active
             if input_rect.collidepoint(event.pos):
                 active = True
             else:
@@ -187,9 +181,9 @@ while True:
                 geturl(user_text)
             
   
-        if event.type == pygame.KEYDOWN and active == True:
+        if event.type == pygame.KEYDOWN and active == True: # if user presses a key down when with the number search box
 
-            if event.key == pygame.K_RETURN: # if key is the enter key
+            if event.key == pygame.K_RETURN: # if key is the enter key set active to fase.
                 active = False
             # Check for backspace
             if event.key == pygame.K_BACKSPACE:
@@ -207,7 +201,7 @@ while True:
                     print("letter")
 
 
-        if event.type == pygame.KEYDOWN and active2 == True:
+        if event.type == pygame.KEYDOWN and active2 == True: # if user presses a key down when with the title search box
             
             if event.key == pygame.K_RETURN: # if key is the enter key
                 active2 = False
@@ -215,11 +209,11 @@ while True:
   
                 # get text input from 0 to -1 i.e. end.
                 search_text = search_text[:-1]
-            else: # input validation ( only between 0-9)
+            else: # input validation only unicode characters.
                 try:
                     search_text += event.unicode
                 except:
-                    print("letter")    
+                    print("non unicode character!")    
             
     # fill screen with white
     screen.fill((255, 255, 255))
@@ -238,12 +232,13 @@ while True:
          show(user_text)
     if active2 == False and len(search_text) != 0:
         search(search_text)
-        
+
+
+    # display texts    
     urlbutton = screen.blit(base_font.render("Go to recording", True, link_color), (5, 300))
     screen.blit(text, textRect)
     screen.blit(text2, textRect2)
-    # draw rectangle and argument passed which should
-    # be on screen
+    # draw rectangles 
     pygame.draw.rect(screen, color, input_rect)
     pygame.draw.rect(screen, color2, search_rect)
 
@@ -252,7 +247,6 @@ while True:
     text_surface2 = base_font.render(search_text, True, (255,255,255))
     text_surface3 = base_font.render(help1_text, True, (0,0,0))
     text_surface4 = base_font.render(help2_text, True, (0,0,0))
-    #text_surface5  = base_font.render(found_at_text, True, (255, 255, 255))
 
     
     screen.blit(text_surface, (input_rect.x+5, input_rect.y+5))
