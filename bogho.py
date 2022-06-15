@@ -64,9 +64,10 @@ def search(title):
             found = True
             
             if count >1:
-                show(name_records[i]["Folder number"])
-            else:
+                
                 arr.append(name_records[i]["Folder number"])
+            else:
+                show(name_records[i]["Folder number"])
             #break
     if found == False: # if not found
         screen.blit(base_font.render("NOT FOUND", True, (0,0,0)), (6,25))
