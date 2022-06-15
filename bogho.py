@@ -24,7 +24,7 @@ with open("AHS Jazz Music Library - Jazz - Instrument Storage.csv", "r") as f:
     name_records = list(csv_reader)
 
 
-
+# function to locate where the music folder is
 def locate(index_num):
     index_num = int(index_num)
     if (0<= index_num <= 14):
@@ -52,41 +52,55 @@ def locate(index_num):
     elif (207 <= index_num <=263 ):
         return 12
     
-
+# create search function to look through the list of music folders to find the target (title)
 def search(title):
     found = False
-    #title = 'Take Five'
+    arr = []
+    arr2 = []
+    count = 0
     for i in range (len(name_records)):
         if name_records[i]["Title"].upper()  == title.upper() :
-            show(name_records[i]["Folder number"])
+            count +=1
             found = True
-            #return name_records[i]["Folder number"]
-            break
-    if found == False:
-        
+            
+            if count >1:
+                show(name_records[i]["Folder number"])
+            else:
+                arr.append(name_records[i]["Folder number"])
+            #break
+    if found == False: # if not found
         screen.blit(base_font.render("NOT FOUND", True, (0,0,0)), (6,25))
-# when go to recording button is pressed, go to link or if no link to generic site
+    if count >1:
+        arr2.append(f"Also appears at: {arr}")
+        for iter, thing in enumerate(arr2):
+            screen.blit(base_font.render(thing,True, (0,0,0)),(6,500))
+
+
+
+
+
+# when "go to recording" button is pressed, go to link or if no link to generic site
 def geturl(num):
     num = int(num)
-    if list(name_records[num-1].values())[6] != "":
+    if list(name_records[num-1].values())[6] != "": # if the url value is not empty, open it in browser.
         webbrowser.open(list(name_records[num-1].values())[6])
-    else:
+    else: # open the generic link to the music recording site.
         webbrowser.open("https://www.jwpepper.com/sheet-music/welcome.jsp")
 
 #get the values from the list (name_records) and display them
 def show(test):
-    string = []
+    arr = []
     test = int(test)
     test -= 1
-    temp = list(name_records[test].values())
+    temp = list(name_records[test].values()) # get all the values and keys
     temp2 = list(name_records[test].keys())
     for i in range(0,7,1):
          if temp[i] != "":
-             string.append(f'{temp2[i]}: {temp[i]}')
+             arr.append(f'{temp2[i]}: {temp[i]}') # append those values to arr to be printed out.
          else:
-             string.append(f'{temp2[i]}: None')
+             arr.append(f'{temp2[i]}: None')
     # print(string)
-    for iter, thing in enumerate(string):
+    for iter, thing in enumerate(arr):
         screen.blit(base_font.render(thing, True, (0,0,0)), (6,25*iter))
 # init pygame         
 pygame.init()
@@ -114,6 +128,7 @@ user_text = ''
 search_text = ""
 help1_text = "Search by number:"
 help2_text = "Search by name:"
+found_at_text = ""
 text = base_font.render('', True, (255,255,255))
 text2= base_font.render('', True, (255,255,255))
 textRect = text.get_rect()
@@ -231,19 +246,22 @@ while True:
     # be on screen
     pygame.draw.rect(screen, color, input_rect)
     pygame.draw.rect(screen, color2, search_rect)
-  
+
+    # draw text to the screen  
     text_surface  = base_font.render(user_text, True, (255, 255, 255))
     text_surface2 = base_font.render(search_text, True, (255,255,255))
     text_surface3 = base_font.render(help1_text, True, (0,0,0))
     text_surface4 = base_font.render(help2_text, True, (0,0,0))
+    #text_surface5  = base_font.render(found_at_text, True, (255, 255, 255))
 
+    
     screen.blit(text_surface, (input_rect.x+5, input_rect.y+5))
     screen.blit(text_surface2, (search_rect.x+5, search_rect.y+5))
     screen.blit(text_surface3, (5, 200))
     screen.blit(text_surface4, (search_rect.x, search_rect.y-30))
     screen.blit(image, (400, 200))  
 
-    # display text
+    # locate where the box is and display it.
     if len(user_text) >0 and active == False:
 
         
