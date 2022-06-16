@@ -29,12 +29,15 @@ with open("AHS Jazz Music Library - Jazz - Instrument Storage.csv", "r") as f:
 
 def locate(index_num):
     
-    index_num = int(index_num)
-    coords=  [(0, 14), (15, 33), (34,50),(51,70),(71,90),(91,110),(111,130),(131,148),(149,166),(167,186),(187,206),(207,226),(227,254),(255,263)]
-    for count, nums in enumerate(coords):
-        if nums[0] <= index_num <= nums[1]:
-            return count + 1
+    try:
+        index_num = int(index_num)
     
+        coords=  [(0, 14), (15, 33), (34,50),(51,70),(71,90),(91,110),(111,130),(131,148),(149,166),(167,186),(187,206),(207,226),(227,254),(255,263)]
+        for count, nums in enumerate(coords):
+            if nums[0] <= index_num <= nums[1]:
+                return count + 1
+    except:
+        print("no")
 # create search function to look through the list of music folders to find the target (title)
 def search(title):
     found = False
@@ -149,7 +152,7 @@ box_7 = cupboard(6,400,370,113,150) # (7,515,400,113,150)
 box_8 = cupboard(7,535,375,113,150) # (8,640,400,113,150)
 box_9 = cupboard(8,655,380,113,150) # (9,770,400,113,150)
 box_10 = cupboard(9,775,375,113,150) # (10,900,400,113,150)
-box_11 = cupboard(10,905,375,113,150) # (11,400,590,113,150)
+box_11 = cupboard(10,905,380,113,150) # (11,400,590,113,150)
 box_12 = cupboard(11,1025,380,113,150) # (12,515,590,113,150)
 box_13 = cupboard(12,400,570,113,150) # (13,640,590,133,150)
 
@@ -260,10 +263,12 @@ while True:
 
     # locate where the box is and display it.
     if (len(user_text) >0 and active == False) or (len(search_text) >0 and active2 == False):
-        try:
-            located = locate(user_text)
-        except:
+        if len(user_text)>0:
             located = locate(getNum(search_text))
+            
+        else:
+            located = locate(user_text)
+            
                                                    
         
         if located == 1:
