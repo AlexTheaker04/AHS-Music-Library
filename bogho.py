@@ -16,7 +16,7 @@ class cupboard:
         self.h = H
         
     def reveal(self):
-        pygame.draw.rect(screen, (255,0,0), (self.x, self.y, self.w, self.h))
+        pygame.draw.rect(screen, (255,0,0), (self.x, self.y, self.w, self.h), 5)
 
 # open and make list of csv file
 with open("AHS Jazz Music Library - Jazz - Instrument Storage.csv", "r") as f:
@@ -25,32 +25,15 @@ with open("AHS Jazz Music Library - Jazz - Instrument Storage.csv", "r") as f:
 
 
 # function to locate where the music folder is
+
+
 def locate(index_num):
+    
     index_num = int(index_num)
-    if (0<= index_num <= 14):
-        return 1
-    elif (15 <=  index_num <=33):
-        return 2
-    elif (34 <= index_num <=50):
-        return 3
-    elif (51 <= index_num <=70):
-        return 4
-    elif (71 <= index_num <=90):
-        return 5
-    elif (91 <= index_num <=110):
-        return 6
-    elif (111 <= index_num <=130):
-        return 7
-    elif (131-148 <= index_num <=148):
-        return 8
-    elif ( 149 <= index_num <=166):
-        return 9
-    elif ( 167 <= index_num <= 186):
-        return 10
-    elif ( 187<= index_num <= 206):
-        return 11
-    elif (207 <= index_num <=263 ):
-        return 12
+    coords=  [(0, 14), (15, 33), (34,50),(51,70),(71,90),(91,110),(111,130),(131,148),(149,166),(167,186),(187,206),(207,226),(227,254),(255,263)]
+    for count, nums in enumerate(coords):
+        if nums[0] <= index_num <= nums[1]:
+            return count + 1
     
 # create search function to look through the list of music folders to find the target (title)
 def search(title):
@@ -84,7 +67,15 @@ def geturl(num):
     else: # open the generic link to the music recording site.
         webbrowser.open("https://www.jwpepper.com/sheet-music/welcome.jsp")
 
-#get the values from the list (name_records) and display them
+
+
+# get the folder number of the folder being searched
+def getNum(title):
+    for i in range (len(name_records)):
+        if name_records[i]["Title"].upper()  == title.upper() :
+            return(name_records[i]["Folder number"])
+
+#get the values from the list (name_records) and display them    
 def show(test):
     arr = []
     test = int(test)
@@ -112,11 +103,11 @@ pygame.display.set_caption('AHS Jazz Library locator!')
 Icon = pygame.image.load("ICON.jpg")
 pygame.display.set_icon(Icon)
 
-# music
+# music loading
 mixer.music.load('take5.wav')
 
 # display image
-image = pygame.image.load("shelf.png")
+image = pygame.image.load("shelf2.jpg")
 image = pygame.transform.scale(image, (900, 600))
 
 # get a font and set a few variables related to text up
@@ -148,12 +139,19 @@ active = False
 active2 = False
 
 # declare classes
-box_1 = cupboard(1,410, 210, 190, 210)
-box_2 = cupboard(2,600,210,190,210)
-box_3 = cupboard(2,790,210,190,210)
-box_4 = cupboard(4,1024,210,190,210)
-#box_5 = cupboard(5,80,80)
-#box_6 = cupboard(6,100,100)
+box_1 = cupboard(1,400,210,113,150)
+box_2 = cupboard(2,515,210,113,150)
+box_3 = cupboard(2,640,210,113,150)
+box_4 = cupboard(4,770,210,113,150)
+box_5 = cupboard(5,900,210,113,150)
+box_6 = cupboard(6,1030,210,113,150)
+box_7 = cupboard(6,400,370,113,150) # (7,515,400,113,150)
+box_8 = cupboard(7,535,375,113,150) # (8,640,400,113,150)
+box_9 = cupboard(8,655,380,113,150) # (9,770,400,113,150)
+box_10 = cupboard(9,775,375,113,150) # (10,900,400,113,150)
+box_11 = cupboard(10,905,375,113,150) # (11,400,590,113,150)
+box_12 = cupboard(11,1025,380,113,150) # (12,515,590,113,150)
+box_13 = cupboard(12,400,570,113,150) # (13,640,590,133,150)
 
 
 
@@ -178,8 +176,12 @@ while True:
             else:
                 active2 = False
             # if the user clicks on get url button
-            if urlbutton.collidepoint(event.pos) and len(user_text) != 0 and int(user_text) <= len(name_records):
-                geturl(user_text)
+            if urlbutton.collidepoint(event.pos):
+                if user_text == "" and search_text !="":
+                    geturl(getNum(search_text))
+                elif user_text !="" and search_text == "":
+                    geturl(user_text)
+                
             
   
         if event.type == pygame.KEYDOWN and active == True: # if user presses a key down when with the number search box
@@ -257,17 +259,43 @@ while True:
     screen.blit(image, (400, 200))  
 
     # locate where the box is and display it.
-    if len(user_text) >0 and active == False:
-
+    if (len(user_text) >0 and active == False) or (len(search_text) >0 and active2 == False):
+        try:
+            located = locate(user_text)
+        except:
+            located = locate(getNum(search_text))
+                                                   
         
-        if locate(user_text) == 1:
+        if located == 1:
             box_1.reveal()
-        elif locate(user_text) == 2:
+        elif located == 2:
             box_2.reveal()
-        elif locate(user_text) == 3:
+        elif located == 3:
             box_3.reveal()
-        elif locate(user_text) == 4:
+        elif located == 4:
             box_4.reveal()
+        elif located == 5:
+            box_5.reveal()
+        elif located == 6:
+            box_6.reveal()
+        elif located == 7:
+            box_7.reveal()
+        elif located == 8:
+            box_8.reveal()
+        elif located == 9:
+            box_9.reveal()
+        elif located == 10:
+            box_10.reveal()
+        elif located == 11:
+            box_11.reveal()
+        elif located == 12:
+            box_12.reveal()
+        elif located == 13:
+            box_13.reveal()
+        elif located == 14:
+            box_14.reveal()
+            
+        
 
      
     pygame.display.flip()
