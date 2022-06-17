@@ -77,12 +77,12 @@ def getNum(title):
             return(name_records[i]["Folder number"])
 
 #get the values from the list (name_records) and display them    
-def show(test):
+def show(index_num):
     arr = []
-    test = int(test)
-    test -= 1
-    temp = list(name_records[test].values()) # get all the values and keys
-    temp2 = list(name_records[test].keys())
+    index_num = int(index_num)
+    index_num -= 1
+    temp = list(name_records[index_num].values()) # get all the values and keys
+    temp2 = list(name_records[index_num].keys())
     for i in range(0,7,1):
          if temp[i] != "":
              arr.append(f'{temp2[i]}: {temp[i]}') # append those values to arr to be printed out.
@@ -302,4 +302,3 @@ while True:
      
     pygame.display.flip()
     clock.tick(60)
-    
