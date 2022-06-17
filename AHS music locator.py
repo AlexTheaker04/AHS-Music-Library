@@ -108,7 +108,7 @@ pygame.display.set_icon(Icon)
 mixer.music.load('take5.wav')
 
 # display image
-image = pygame.image.load("shelf2.jpg")
+image = pygame.image.load("shelf.jpg")
 image = pygame.transform.scale(image, (900, 600))
 
 # get a font and set a few variables related to text up
@@ -152,7 +152,8 @@ box_9 = cupboard(8,655,380,113,150)
 box_10 = cupboard(9,775,375,113,150) 
 box_11 = cupboard(10,905,380,113,150) 
 box_12 = cupboard(11,1025,380,113,150) 
-box_13 = cupboard(12,400,570,113,150) 
+box_13 = cupboard(12,400,570,113,150)
+box_14 = cupboard(14,515,560,113,150)
 
 
 
@@ -301,3 +302,4 @@ while True:
      
     pygame.display.flip()
     clock.tick(60)
+    
